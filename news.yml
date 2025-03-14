@@ -1,0 +1,55 @@
+name: Auto Format Code
+ 
+on: [push, pull_request]
+ 
+jobs:
+
+  format:
+
+    runs-on: ubuntu-latest
+ 
+    steps:
+
+      - name: Checkout repository
+
+        uses: actions/checkout@v3
+
+        with:
+
+          token: ${{ secrets.GITHUB_TOKEN }}
+ 
+      - name: Set up Python
+
+        uses: actions/setup-python@v4
+
+        with:
+
+          python-version: '3.x'
+ 
+      - name: Install formatting tools
+
+        run: pip install black isort
+ 
+      - name: Format code
+
+        run: |
+
+          black .
+
+          isort .
+ 
+      - name: Commit formatted code
+
+        run: |
+
+          git config --global user.name 'github-actions'
+
+          git config --global user.email 'github-actions@github.com'
+
+          git add .
+
+          git commit -m "Auto-formatted code using Black and isort" || exit 0
+
+          git push
+
+ 
